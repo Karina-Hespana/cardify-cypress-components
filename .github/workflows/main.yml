@@ -1,56 +1,40 @@
 name: Cypress Component Tests
 
-on:
-  push:
-    branches: [main,develop]
-  pull_request:
-    branches: [main,develope]
+   on: 
+     push:
+       branches: [main, develop]
+     pull_request:
+       branches: [main, develop]
+    
+    jobs:
+      component-tests:
+        runs-on: ubuntu-latest
 
-jobs:
-  cypress-component-tests:
-    runs-on: ubuntu-latest
+        steps:
+          - name: Checkout do código
+            uses: actions/checkout@v4
+            
+          - name: Setup Node.js
+            uses: actions/setup-node@v4
+            with:
+                node-version: '22'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+          - name: Instalar Dependências
+            run: npm install
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+          - name: Executar Testes de Componentes
+            run: npx cypress run --component
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Executar Testes de Componente
-        run: npx cypress run --component
-
-        -name: Salvar Vídeos (se houver)
-        if: always()
-        uses: actions/upload-artifact@v4
-        whit:
-         name: component-videos
-        path: cypress/videos
-  
-      - name: Salvar Screenshots (se falhar)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        whit:
-         name: component-screenshots
-        path: cypress/screenshots
-
-         
-  
-  
-       
-
-
-       
-
-        
-        
-        
-
-
-      - name: Run Cypress Component Tests
-        run: npx cypress run-ct
+            - name: Salvar Vídeos (se houver)
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: component-videos
+                path: cypress/videos
+            
+            - name: Salvar Screenshots (se houver)
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                name: component-screenshots
+                path: cypress/screenshots
